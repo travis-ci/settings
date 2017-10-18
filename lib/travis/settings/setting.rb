@@ -20,9 +20,8 @@ module Travis
           attrs[:value]
         elsif inherited
           value, @source = inherited
-          value # TODO use default if undefined
+          @source ? value : default
         else
-          @source = :default
           default
         end
       end
@@ -56,6 +55,7 @@ module Travis
         end
 
         def default
+          @source = :default
           group.resolve(definition.default)
         end
 

@@ -1,6 +1,4 @@
-orm = defined?(Sequel) ? 'sequel' : 'active_record'
-
-require "travis/settings/#{orm}/record"
+require "travis/settings/record/#{defined?(Sequel) ? 'sequel' : 'active_record'}"
 require 'travis/settings/definition'
 require 'travis/settings/group'
 require 'travis/settings/lookup'
