@@ -32,6 +32,10 @@ module Travis
         settings[key] || raise("Unknown setting #{key.inspect}")
       end
 
+      def fetch(key)
+        settings[key]
+      end
+
       def config
         super || {}
       end
@@ -53,9 +57,11 @@ module Travis
       end
 
       def inherit(from, key)
-        return unless owner.respond_to?(from)
-        setting = self.class.new(owner.send(from))[key]
-        [setting.value, from] if setting.defined?
+        from.detect do |from|
+          next unless source = owner.respond_to?(from) && owner.send(from)
+          setting = self.class.new(source).fetch(key)
+          break [setting.value, from] if setting&.defined?
+        end
       end
 
       private

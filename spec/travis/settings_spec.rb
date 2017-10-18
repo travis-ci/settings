@@ -88,18 +88,18 @@ describe Travis::Settings::Group do
     let(:const) do
       Class.new(described_class) do
         int :timeout,
-          owner: [:user, :org, :repo],
+          owner: [:owners, :user, :org, :repo],
           scope: :repo,
           type: :integer,
-          inherit: :owner,
+          inherit: [:owner, :owner_group],
           default: ->(s) { s.config[:timeout] || 60 * 60 },
           max: :max_timeout,
           min: 0 # default
 
         int :max_timeout,
-          owner: [:global, :user, :org, :repo],
+          owner: [:owners, :user, :org, :repo],
           scope: :repo,
-          inherit: :owner,
+          inherit: [:owner, :owner_group],
           default: ->(s) { s.config[:max_timeout] || 2 * 60 * 60 },
           internal: true
       end
@@ -125,9 +125,18 @@ describe Travis::Settings::Group do
     end
 
     describe 'inheriting a value' do
-      before { const.new(user)[:timeout].set(10) }
-      it { expect(timeout.source).to eq :owner }
-      it { expect(timeout.value).to eq 10 }
+      describe 'from the owner' do
+        before { const.new(user)[:timeout].set(10) }
+        it { expect(timeout.source).to eq :owner }
+        it { expect(timeout.value).to eq 10 }
+      end
+
+      describe 'from the owner group' do
+        let(:owners) { create(:owner_group, owner_id: user.id, owner_type: 'User') }
+        before { const.new(owners)[:timeout].set(10) }
+        it { expect(timeout.source).to eq :owner_group }
+        it { expect(timeout.value).to eq 10 }
+      end
     end
 
     describe 'exceeding max value' do

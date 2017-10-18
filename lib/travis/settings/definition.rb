@@ -3,6 +3,7 @@ module Travis
     class Definition < Struct.new(:attrs)
       OWNERS = {
         global: 'NilClass',
+        owners: 'OwnerGroup',
         repo:   'Repository',
         org:    'Organization',
         user:   'User'

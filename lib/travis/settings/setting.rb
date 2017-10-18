@@ -20,7 +20,7 @@ module Travis
           attrs[:value]
         elsif inherited
           value, @source = inherited
-          value
+          value # TODO use default if undefined
         else
           @source = :default
           default

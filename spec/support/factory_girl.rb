@@ -1,4 +1,5 @@
 require 'factory_girl'
+require 'securerandom'
 
 RSpec.configure do |c|
   c.include FactoryGirl::Syntax::Methods
@@ -18,5 +19,9 @@ FactoryGirl.define do
 
   factory :org, class: Organization do
     login 'org'
+  end
+
+  factory :owner_group do
+    uuid SecureRandom.uuid
   end
 end

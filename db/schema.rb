@@ -16,31 +16,43 @@ ActiveRecord::Schema.define(version: 20171011140000) do
   enable_extension "plpgsql"
 
   create_table "env_vars", force: :cascade do |t|
-    t.integer "owner_id"
     t.string "owner_type"
+    t.bigint "owner_id"
     t.string "name"
     t.string "value"
     t.boolean "private"
+    t.index ["owner_type", "owner_id"], name: "index_env_vars_on_owner_type_and_owner_id"
   end
 
   create_table "organizations", force: :cascade do |t|
     t.string "login"
   end
 
-  create_table "repositories", force: :cascade do |t|
-    t.integer "owner_id"
+  create_table "owner_groups", force: :cascade do |t|
+    t.string "uuid"
     t.string "owner_type"
+    t.bigint "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["owner_type", "owner_id"], name: "index_owner_groups_on_owner_type_and_owner_id"
+  end
+
+  create_table "repositories", force: :cascade do |t|
+    t.string "owner_type"
+    t.bigint "owner_id"
     t.string "owner_name"
     t.string "name"
+    t.index ["owner_type", "owner_id"], name: "index_repositories_on_owner_type_and_owner_id"
   end
 
   create_table "settings", force: :cascade do |t|
-    t.string "key"
-    t.integer "owner_id"
     t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "key"
     t.string "value"
     t.datetime "expires_at"
     t.text "comment"
+    t.index ["owner_type", "owner_id"], name: "index_settings_on_owner_type_and_owner_id"
   end
 
   create_table "users", force: :cascade do |t|
