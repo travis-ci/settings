@@ -30,7 +30,7 @@ class CreateTables < ActiveRecord::Migration[5.1]
     create_table :settings do |t|
       t.belongs_to :owner, polymorphic: true
       t.string :key
-      t.string :value
+      t.text :value # ok to use a blob here?
       t.datetime :expires_at
       t.text :comment
     end

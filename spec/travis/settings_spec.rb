@@ -14,7 +14,8 @@ describe Travis::Settings::Group do
       end
     end
 
-    let(:sets) { const.new(create(:user)) }
+    let(:owner) { create(:user) }
+    let(:sets)  { const.new(owner) }
 
     describe 'all' do
       it { expect(sets.all.map(&:key)).to eq [:comic_sans, :other] }
@@ -37,17 +38,16 @@ describe Travis::Settings::Group do
       it { expect(sets[:comic_sans].enabled?).to be false }
     end
 
-    describe 'to_h' do
-      let(:hash) { sets[:comic_sans].to_h }
-      it do
-        expect(hash).to eq(
-          scope: :beta_features,
-          key: :comic_sans,
-          value: false,
-          type: :bool,
-          source: :default
-        )
-      end
+    it 'to_h' do
+      expect(sets[:comic_sans].to_h).to eq(
+        scope: :beta_features,
+        key: :comic_sans,
+        owner_id: owner.id,
+        owner_type: 'User',
+        value: false,
+        type: :bool,
+        source: :default
+      )
     end
   end
 
@@ -91,7 +91,7 @@ describe Travis::Settings::Group do
           owner: [:owners, :user, :org, :repo],
           scope: :repo,
           type: :integer,
-          inherit: [:owner, :owner_group],
+          inherit: [:owner, :owners],
           default: ->(s) { s.config[:timeout] || 60 * 60 },
           max: :max_timeout,
           min: 0 # default
@@ -99,7 +99,7 @@ describe Travis::Settings::Group do
         int :max_timeout,
           owner: [:owners, :user, :org, :repo],
           scope: :repo,
-          inherit: [:owner, :owner_group],
+          inherit: [:owner, :owners],
           default: ->(s) { s.config[:max_timeout] || 2 * 60 * 60 },
           internal: true
       end
@@ -134,7 +134,7 @@ describe Travis::Settings::Group do
       describe 'from the owner group' do
         let(:owners) { create(:owner_group, owner_id: user.id, owner_type: 'User') }
         before { const.new(owners)[:timeout].set(10) }
-        it { expect(timeout.source).to eq :owner_group }
+        it { expect(timeout.source).to eq :owners }
         it { expect(timeout.value).to eq 10 }
       end
     end

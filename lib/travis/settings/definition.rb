@@ -1,6 +1,6 @@
 module Travis
   module Settings
-    class Definition < Struct.new(:attrs)
+    class Definition < Struct.new(:opts)
       OWNERS = {
         global: 'NilClass',
         owners: 'OwnerGroup',
@@ -10,15 +10,15 @@ module Travis
       }
 
       %i(type key scope inherit default min max requires).each do |key|
-        define_method(key) { attrs[key] }
+        define_method(key) { opts[key] }
       end
 
-      def internal
-        !!attrs[:internal]
+      %i(encrypted internal).each do |key|
+        define_method(key) { !!opts[key] }
       end
 
       def owner?(owner)
-        attrs[:owner].any? { |key| OWNERS[key] == owner.class.name }
+        opts[:owner].any? { |key| OWNERS[key] == owner.class.name }
       end
 
       def owner_key(name)

@@ -10,7 +10,7 @@ OwnerGroup = Class.new(ActiveRecord::Base)
 class Repository < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
-  def owner_group
+  def owners
     OwnerGroup.where(owner_id: owner_id, owner_type: owner_type).first
   end
 end

@@ -1,27 +1,32 @@
 module Travis
   module Settings
     class Group < Struct.new(:owner, :config)
-      module Dsl
-        def define(key, attrs)
-          definitions << Definition.new(attrs.merge(key: key))
-        end
-
+      class << self
         %i(bool int str).each do |type|
           define_method(type) do |key, attrs|
             define(key, attrs.merge(type: type))
           end
         end
 
-        def definitions
-          @definitions ||= []
+        def define(key, attrs)
+          # TODO validate that only type: string can also be encrypted
+          # maybe also validate that if any settings uses a :required flag
+          # then that flag exists and it's a boolean type
+          definitions << Definition.new(attrs.merge(key: key))
         end
 
         def definitions_for(owner)
           definitions.select { |d| d.owner?(owner) }
         end
-      end
 
-      extend Dsl
+        def resolve?(value)
+          RESOLVE.include?(value.class)
+        end
+
+        def definitions
+          @definitions ||= []
+        end
+      end
 
       def all(*args)
         opts, scope = args.last.is_a?(Hash) ? args.pop : {}, args.shift
@@ -45,6 +50,8 @@ module Travis
         self
       end
 
+      RESOLVE = [Proc, Symbol]
+
       def resolve(value)
         case value
         when Symbol
@@ -60,7 +67,7 @@ module Travis
         from.detect do |from|
           next unless source = owner.respond_to?(from) && owner.send(from)
           setting = self.class.new(source).fetch(key)
-          break [setting.value, from] if setting&.defined?
+          break [setting.value, from] if setting&.set?
         end
       end
 

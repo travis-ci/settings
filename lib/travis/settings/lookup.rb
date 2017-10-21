@@ -8,15 +8,15 @@ module Travis
       private
 
         def settings
-          definitions.map { |definition| setting_for(definition) }
+          definitions.map { |definition| instance_for(definition) }
         end
 
-        def setting_for(definition)
+        def instance_for(definition)
           const_for(definition).new(group, attrs_for(definition.key), definition)
         end
 
         def const_for(definition)
-          Settings.const_get(definition.type.to_s.titleize)
+          Settings::Model.const_get(definition.type.to_s.titleize)
         end
 
         def attrs_for(key)

@@ -1,3 +1,5 @@
+require 'active_record'
+
 module Travis
   module Settings
     module Record

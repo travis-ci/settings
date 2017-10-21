@@ -2,7 +2,7 @@ require "travis/settings/record/#{defined?(Sequel) ? 'sequel' : 'active_record'}
 require 'travis/settings/definition'
 require 'travis/settings/group'
 require 'travis/settings/lookup'
-require 'travis/settings/setting'
+require 'travis/settings/model'
 require 'travis/settings/store'
 
 module Travis
@@ -18,5 +18,7 @@ module Travis
         super("Invalid value for setting #{key}: #{value.inspect}")
       end
     end
+
+    InvalidConfig = Class.new(StandardError)
   end
 end

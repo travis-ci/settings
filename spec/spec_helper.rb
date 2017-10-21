@@ -1,10 +1,12 @@
 orm = ENV['ORM'] || 'active_record'
 
+require 'travis/settings'
 require 'database_cleaner'
 require "support/#{orm}"
-require 'support/factory_girl'
+require 'support/factories'
 require 'support/now'
-require 'travis/settings'
+
+Travis::Encrypt.setup(key: SecureRandom.hex(64))
 
 DatabaseCleaner.clean
 

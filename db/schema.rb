@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20171011140000) do
     t.string "owner_type"
     t.bigint "owner_id"
     t.string "key"
-    t.string "value"
+    t.text "value"
     t.datetime "expires_at"
     t.text "comment"
     t.index ["owner_type", "owner_id"], name: "index_settings_on_owner_type_and_owner_id"

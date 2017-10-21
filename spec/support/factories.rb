@@ -1,11 +1,11 @@
-require 'factory_girl'
+require 'factory_bot'
 require 'securerandom'
 
 RSpec.configure do |c|
-  c.include FactoryGirl::Syntax::Methods
+  c.include FactoryBot::Syntax::Methods
 end
 
-FactoryGirl.define do
+FactoryBot.define do
   to_create { |record| record.save } if defined?(Sequel)
 
   factory :repo, class: Repository do
@@ -24,4 +24,6 @@ FactoryGirl.define do
   factory :owner_group do
     uuid SecureRandom.uuid
   end
+
+  factory :setting, class: Travis::Settings::Record::Setting
 end
