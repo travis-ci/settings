@@ -39,11 +39,11 @@ module Travis
       end
 
       def [](key)
-        settings[key] || raise("Unknown setting #{key.inspect}")
+        fetch(key) || raise("Unknown setting #{key.inspect}")
       end
 
       def fetch(key)
-        settings[key]
+        settings[key] || settings.values.detect { |v| v.alias?(key) }
       end
 
       def config

@@ -6,12 +6,14 @@ describe Travis::Settings::Model::Collection do
         owner: [:repo],
         scope: :scope
 
-      bool :foo, owner: [:repo], scope: :scope
+      bool :other,
+        owner: [:repo],
+        scope: :scope
     end
   end
 
-  let(:repo)  { create(:repo) }
-  let(:sets)  { const.new(repo) }
+  let(:repo) { create(:repo) }
+  let(:sets) { const.new(repo) }
 
   describe 'empty' do
     it 'to_h' do

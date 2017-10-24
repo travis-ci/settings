@@ -24,7 +24,7 @@ module Travis
         end
 
         def keys
-          definitions.map(&:key)
+          definitions.map(&:keys).flatten
         end
 
         # TODO this would allow using nested keys for collections. e.g. values

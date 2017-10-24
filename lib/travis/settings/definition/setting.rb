@@ -1,23 +1,9 @@
+require 'travis/settings/definition/base'
+
 module Travis
   module Settings
     module Definition
-      class Setting < Struct.new(:opts)
-        %i(type key scope inherit default min max requires).each do |key|
-          define_method(key) { opts[key] }
-        end
-
-        %i(encrypted internal).each do |key|
-          define_method(key) { !!opts[key] }
-        end
-
-        def owner?(owner)
-          opts[:owner].any? { |key| OWNERS[key] == owner.class.name }
-        end
-
-        def owner_key(name)
-          OWNERS.invert[name]
-        end
-
+      class Setting < Base
         def instance(group, owner, record)
           record = record.first if record.is_a?(Array)
           const.new(group, attrs_for(owner, record), self)

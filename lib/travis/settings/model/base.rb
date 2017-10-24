@@ -18,6 +18,10 @@ module Travis
           attrs[:key] || definition.key
         end
 
+        def alias?(key)
+          definition.alias.include?(key)
+        end
+
         def active?
           requires.nil? || group.resolve(requires)
         end

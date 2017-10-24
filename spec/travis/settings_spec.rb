@@ -10,7 +10,8 @@ describe Travis::Settings::Group do
         bool :other,
           owner: [:user],
           scope: :other,
-          internal: true
+          internal: true,
+          alias: [:aliased]
       end
     end
 
@@ -36,6 +37,10 @@ describe Travis::Settings::Group do
       before { sets[:comic_sans].enable }
       before { sets[:comic_sans].disable }
       it { expect(sets[:comic_sans].enabled?).to be false }
+    end
+
+    describe 'alias' do
+      it { expect(sets[:aliased].key).to eq :other }
     end
 
     it 'to_h' do
