@@ -26,4 +26,6 @@ FactoryBot.define do
   end
 
   factory :setting, class: Travis::Settings::Record::Setting
+  factory :env_var, class: Travis::Settings::Record::EnvVar
+  factory :ssh_key, class: Travis::Settings::Record::SshKey
 end

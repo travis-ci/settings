@@ -161,4 +161,33 @@ describe Travis::Settings::Group do
       end
     end
   end
+
+  describe 'env_vars' do
+    let(:user)   { create(:user) }
+    let(:var)    { Travis::Settings.env_vars(user).first }
+    let(:record) { Travis::Settings::Record::EnvVar.first }
+
+    describe 'public' do
+      before { create(:env_var, owner: user, name: 'foo', value: 'FOO', public: true) }
+      it { expect(var.to_h).to eq 'foo' => 'FOO' }
+      it { expect(record.read_attribute(:value)).to start_with '--ENCR--' }
+    end
+
+    describe 'private' do
+      before { create(:env_var, owner: user, name: 'foo', value: 'FOO', public: false) }
+      it { expect(var.to_h).to eq 'foo' => 'FOO' }
+      it { expect(record.read_attribute(:value)).to start_with '--ENCR--' }
+    end
+  end
+
+  describe 'keys' do
+    let(:user)   { create(:user) }
+    let(:key)    { Travis::Settings.ssh_keys(user).first }
+    let(:record) { Travis::Settings::Record::SshKey.first }
+
+    before { create(:ssh_key, owner: user, key: '1234', description: 'description') }
+    it { expect(key.key).to eq '1234' }
+    it { expect(key.description).to eq 'description' }
+    it { expect(record.read_attribute(:key)).to start_with '--ENCR--' }
+  end
 end

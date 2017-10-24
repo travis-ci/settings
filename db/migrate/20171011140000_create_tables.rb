@@ -24,7 +24,13 @@ class CreateTables < ActiveRecord::Migration[5.1]
       t.belongs_to :owner, polymorphic: true
       t.string :name
       t.string :value
-      t.boolean :private
+      t.boolean :public, default: false
+    end
+
+    create_table :ssh_keys do |t|
+      t.belongs_to :owner, polymorphic: true
+      t.string :key
+      t.string :description
     end
 
     create_table :settings do |t|

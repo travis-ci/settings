@@ -1,10 +1,35 @@
 require 'active_record'
+require 'travis/encrypt/helpers/active_record'
 
 module Travis
   module Settings
     module Record
       class EnvVar < ActiveRecord::Base
+        include Encrypt::Helpers::ActiveRecord
+
         belongs_to :owner, polymorphic: true
+
+        attr_encrypted :value
+
+        def self.by_owner(owner)
+          where(owner: owner)
+        end
+
+        def to_h
+          { name => value }
+        end
+      end
+
+      class SshKey < ActiveRecord::Base
+        include Encrypt::Helpers::ActiveRecord
+
+        belongs_to :owner, polymorphic: true
+
+        attr_encrypted :key
+
+        def self.by_owner(owner)
+          where(owner: owner)
+        end
       end
 
       class Setting < ActiveRecord::Base

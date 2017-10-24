@@ -20,5 +20,15 @@ module Travis
     end
 
     InvalidConfig = Class.new(StandardError)
+
+    def env_vars(owner)
+      Record::EnvVar.by_owner(owner)
+    end
+
+    def ssh_keys(owner)
+      Record::SshKey.where(owner: owner).all
+    end
+
+    extend self
   end
 end

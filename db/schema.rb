@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20171011140000) do
     t.bigint "owner_id"
     t.string "name"
     t.string "value"
-    t.boolean "private"
+    t.boolean "public", default: false
     t.index ["owner_type", "owner_id"], name: "index_env_vars_on_owner_type_and_owner_id"
   end
 
@@ -53,6 +53,14 @@ ActiveRecord::Schema.define(version: 20171011140000) do
     t.datetime "expires_at"
     t.text "comment"
     t.index ["owner_type", "owner_id"], name: "index_settings_on_owner_type_and_owner_id"
+  end
+
+  create_table "ssh_keys", force: :cascade do |t|
+    t.string "owner_type"
+    t.bigint "owner_id"
+    t.string "key"
+    t.string "description"
+    t.index ["owner_type", "owner_id"], name: "index_ssh_keys_on_owner_type_and_owner_id"
   end
 
   create_table "users", force: :cascade do |t|
