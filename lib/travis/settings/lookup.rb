@@ -1,3 +1,6 @@
+require 'travis/settings/factory/collection'
+require 'travis/settings/factory/setting'
+
 module Travis
   module Settings
     class Lookup < Struct.new(:group, :definitions, :owner)
@@ -12,7 +15,9 @@ module Travis
         end
 
         def instance_for(definition)
-          definition.instance(group, owner, records_for(definition.key))
+          const = definition.type == :collection ? Factory::Collection : Factory::Setting
+          records = records_for(definition.key)
+          const.new(definition, group, owner, records).instance
         end
 
         def records_for(key)
