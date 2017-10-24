@@ -62,7 +62,8 @@ describe Travis::Settings::Group do
         int :by_queue_max,
           owner: [:user, :org],
           scope: :concurrency,
-          requires: :by_queue_enabled
+          requires: :by_queue_enabled,
+          default: 5
 
         bool :by_queue_enabled,
           owner: [:user, :org],
@@ -84,6 +85,7 @@ describe Travis::Settings::Group do
 
       describe 'not allowed' do
         it { expect(sets.all.map(&:key)).to_not include :by_queue_max }
+        it { expect(sets[:by_queue_max].value).to eq 5 }
         it { expect { sets[:by_queue_max].set(10) }.to raise_error Travis::Settings::InactiveSetting }
       end
     end
@@ -95,7 +97,6 @@ describe Travis::Settings::Group do
         int :timeout,
           owner: [:owners, :user, :org, :repo],
           scope: :repo,
-          type: :integer,
           inherit: [:owner, :owners],
           default: ->(s) { s.config[:timeout] || 60 * 60 },
           max: :max_timeout,
