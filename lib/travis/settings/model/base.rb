@@ -6,12 +6,16 @@ module Travis
       class Base < Struct.new(:group, :attrs, :definition)
         include Travis::Encrypt
 
-        %i(key scope encrypted inherit internal requires type).each do |key|
+        %i(scope encrypted inherit internal requires type).each do |key|
           define_method(key) { definition.send(key) }
         end
 
         %i(owner_id owner_type).each do |key|
           define_method(key) { attrs[key] }
+        end
+
+        def key
+          attrs[:key] || definition.key
         end
 
         def active?

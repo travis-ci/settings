@@ -12,32 +12,36 @@ module Travis
         end
 
         def instance_for(definition)
-          const_for(definition).new(group, attrs_for(definition.key), definition)
+          definition.instance(group, owner, records_for(definition.key))
         end
 
-        def const_for(definition)
-          Settings::Model.const_get(definition.type.to_s.titleize)
-        end
-
-        def attrs_for(key)
-          record = record_for(key)
-          attrs = { key: key }
-          attrs = attrs.merge(symbolize(record.attributes)) if record
-          attrs = attrs.merge(owner_type: owner.class.name, owner_id: owner.id) if owner
-          attrs
-        end
-
-        def record_for(key)
-          records.detect { |record| record.key == key }
+        def records_for(key)
+          records.select { |record| record.key == key }
         end
 
         def records
-          @records ||= Record::Setting.where(key: definitions.map(&:key), owner: owner).all
+          @records ||= Record::Setting.where(key: keys, owner: owner).order(:id).all
         end
 
-        def symbolize(hash)
-          hash.map { |key, value| [key.to_sym, value] }.to_h
+        def keys
+          definitions.map(&:key)
         end
+
+        # TODO this would allow using nested keys for collections. e.g. values
+        # on the collection :foo could have keys like foo.one and foo.other.  i
+        # think that might be useful for clients, but it also might be just
+        # yagni. discuss this with others.
+
+        # def keys
+        #   keys = definitions.map(&:key)
+        #   strs = keys.zip(keys.map { |key| "#{key}.%" }).flatten
+        #   cond = Array.new(keys.size) { 'key = ? OR key LIKE ?' }.join(' OR ')
+        #   ["(#{cond})", *strs]
+        # end
+        #
+        # def matches?(one, other)
+        #   one == other or other.to_s.start_with?("#{one}.")
+        # end
     end
   end
 end

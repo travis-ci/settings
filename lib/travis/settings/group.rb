@@ -2,17 +2,22 @@ module Travis
   module Settings
     class Group < Struct.new(:owner, :config)
       class << self
-        %i(bool int str).each do |type|
+        %i(bool int str seqence).each do |type|
           define_method(type) do |key, attrs|
             define(key, attrs.merge(type: type))
           end
+        end
+
+        def collection(key, attrs)
+          attrs = attrs.merge(key: key, item_type: attrs[:type])
+          definitions << Definition::Collection.new(attrs)
         end
 
         def define(key, attrs)
           # TODO validate that only type: string can also be encrypted
           # maybe also validate that if any settings uses a :required flag
           # then that flag exists and it's a boolean type
-          definitions << Definition.new(attrs.merge(key: key))
+          definitions << Definition::Setting.new(attrs.merge(key: key))
         end
 
         def definitions_for(owner)

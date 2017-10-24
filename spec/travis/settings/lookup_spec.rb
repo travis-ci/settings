@@ -1,6 +1,6 @@
 describe Travis::Settings::Lookup do
   let(:owner)  { create(:user) }
-  let(:defin)  { Travis::Settings::Definition.new(key: :key, type: type, default: 0) }
+  let(:defin)  { Travis::Settings::Definition::Setting.new(key: :key, type: type, default: 0) }
   let(:lookup) { described_class.new(nil, [defin], owner) }
   subject { lookup.run[:key] }
 
