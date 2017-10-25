@@ -25,7 +25,7 @@ FactoryBot.define do
     uuid SecureRandom.uuid
   end
 
-  factory :setting, class: Travis::Settings::Record::Setting
-  factory :env_var, class: Travis::Settings::Record::EnvVar
-  factory :ssh_key, class: Travis::Settings::Record::SshKey
+  factory :setting, class: Settings::Record::Setting
+  factory :env_var, class: Settings::Record::EnvVar
+  factory :ssh_key, class: Settings::Record::SshKey
 end

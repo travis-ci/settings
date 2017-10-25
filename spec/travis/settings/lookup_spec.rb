@@ -1,23 +1,23 @@
-describe Travis::Settings::Lookup do
+describe Settings::Lookup do
   let(:owner)  { create(:user) }
-  let(:defin)  { Travis::Settings::Definition::Setting.new(key: :key, type: type, default: 0) }
+  let(:defin)  { Settings::Definition::Setting.new(key: :key, type: type, default: 0) }
   let(:lookup) { described_class.new(nil, [defin], owner) }
   subject { lookup.run[:key] }
 
   describe 'types' do
     describe 'bool' do
       let(:type) { :bool }
-      it { should be_a Travis::Settings::Model::Bool }
+      it { should be_a Settings::Model::Bool }
     end
 
     describe 'int' do
       let(:type) { :int }
-      it { should be_a Travis::Settings::Model::Int }
+      it { should be_a Settings::Model::Int }
     end
 
     describe 'string' do
       let(:type) { :string }
-      it { should be_a Travis::Settings::Model::String }
+      it { should be_a Settings::Model::String }
     end
   end
 

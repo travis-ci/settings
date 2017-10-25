@@ -1,6 +1,6 @@
-describe Travis::Settings::Model::Collection do
+describe Settings::Model::Collection do
   let(:const) do
-    Class.new(Travis::Settings::Group) do
+    Class.new(Settings::Group) do
       collection :keys,
         type: :string,
         owner: [:repo],

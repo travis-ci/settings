@@ -1,6 +1,6 @@
 orm = ENV['ORM'] || 'active_record'
 
-require 'travis/settings'
+require 'settings'
 require 'database_cleaner'
 require "support/#{orm}"
 require 'support/factories'

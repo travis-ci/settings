@@ -1,9 +1,9 @@
-describe Travis::Settings::Model do
+describe Settings::Model do
   let(:owner) { create(:user) }
   let(:repo)  { create(:repo, owner: owner) }
-  let(:const) { Class.new(Travis::Settings::Group) }
+  let(:const) { Class.new(Settings::Group) }
   let(:group) { const.new(repo, {}) }
-  let(:defin) { Travis::Settings::Definition::Setting.new(opts) }
+  let(:defin) { Settings::Definition::Setting.new(opts) }
   let(:opts)  { { scope: :scope, key: :key, owner: [:owners, :user, :repo], type: type, default: false } }
   let(:attrs) { { key: :key, owner_id: repo.id, owner_type: 'Repository' } }
   let(:model) { described_class::Bool.new(group, attrs, defin) }
@@ -44,20 +44,20 @@ describe Travis::Settings::Model do
 
       describe 'defaults to true' do
         let(:other) { { key: :other, owner: [:user, :repo], type: :bool, default: true } }
-        before { const.definitions << Travis::Settings::Definition::Setting.new(other) }
+        before { const.definitions << Settings::Definition::Setting.new(other) }
         it { expect(model.active?).to be true }
       end
 
       describe 'value record exists' do
         let(:other) { { key: :other, owner: [:user, :repo], type: :bool } }
-        before { const.definitions << Travis::Settings::Definition::Setting.new(other) }
+        before { const.definitions << Settings::Definition::Setting.new(other) }
         before { create(:setting, key: :other, owner: repo, value: true) }
         it { expect(model.active?).to be true }
       end
 
       describe 'value record does not exist' do
         let(:other) { { key: :other, owner: [:user, :repo], type: :bool } }
-        before { const.definitions << Travis::Settings::Definition::Setting.new(other) }
+        before { const.definitions << Settings::Definition::Setting.new(other) }
         it { expect(model.active?).to be false }
       end
     end
@@ -93,7 +93,7 @@ describe Travis::Settings::Model do
     end
   end
 
-  let(:record) { Travis::Settings::Record::Setting.where(key: :key, owner: repo).first }
+  let(:record) { Settings::Record::Setting.where(key: :key, owner: repo).first }
 
   describe 'set' do
     describe 'a bool' do
@@ -123,15 +123,15 @@ describe Travis::Settings::Model do
     describe 'when not enabled' do
       let(:other) { { key: :other, owner: [:user, :repo], type: :bool } }
       before { opts.update(requires: :other) }
-      before { const.definitions << Travis::Settings::Definition::Setting.new(other) }
+      before { const.definitions << Settings::Definition::Setting.new(other) }
       it { expect(model.value).to be false }
-      it { expect { model.set(true) }.to raise_error Travis::Settings::InactiveSetting }
+      it { expect { model.set(true) }.to raise_error Settings::InactiveSetting }
     end
 
     describe 'when enabled' do
       let(:other) { { key: :other, owner: [:user, :repo], type: :bool } }
       before { opts.update(requires: :other) }
-      before { const.definitions << Travis::Settings::Definition::Setting.new(other) }
+      before { const.definitions << Settings::Definition::Setting.new(other) }
       before { create(:setting, key: :other, owner: repo, value: true) }
       it { expect { model.set(true) }.to change { model.value }.from(false).to(true) }
     end
@@ -143,13 +143,13 @@ describe Travis::Settings::Model do
     describe 'a bool' do
       let(:model) { described_class::Bool.new(group, attrs, defin) }
       let(:type)  { :bool }
-      it { expect { model.set(true) }.to raise_error Travis::Settings::InvalidConfig }
+      it { expect { model.set(true) }.to raise_error Settings::InvalidConfig }
     end
 
     describe 'an int' do
       let(:model) { described_class::Int.new(group, attrs, defin) }
       let(:type)  { :int }
-      it { expect { model.set(1) }.to raise_error Travis::Settings::InvalidConfig }
+      it { expect { model.set(1) }.to raise_error Settings::InvalidConfig }
     end
 
     describe 'a string' do

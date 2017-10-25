@@ -1,4 +1,4 @@
-describe Travis::Settings::Group do
+describe Settings::Group do
   describe 'flags' do
     let(:const) do
       Class.new(described_class) do
@@ -19,7 +19,7 @@ describe Travis::Settings::Group do
     let(:sets)  { const.new(owner) }
 
     describe 'all' do
-      it { expect(sets.all.map(&:key)).to eq [:comic_sans, :other] }
+      it { expect(sets.all.map(&:key)).to eq [:comic_sans] }
       it { expect(sets.all(:beta_features).map(&:key)).to eq [:comic_sans] }
       it { expect(sets.all(internal: true).map(&:key)).to eq [:other] }
     end
@@ -73,7 +73,8 @@ describe Travis::Settings::Group do
     end
 
     let(:sets) { const.new(create(:org)) }
-    it { expect(sets.all(internal: true).map(&:key)).to include :by_queue_enabled }
+    it { expect(sets.all.map(&:key)).to eq [] }
+    it { expect(sets.all(internal: true).map(&:key)).to eq [:by_queue_enabled] }
 
     describe 'enable' do
       describe 'allowed' do
@@ -86,7 +87,7 @@ describe Travis::Settings::Group do
       describe 'not allowed' do
         it { expect(sets.all.map(&:key)).to_not include :by_queue_max }
         it { expect(sets[:by_queue_max].value).to eq 5 }
-        it { expect { sets[:by_queue_max].set(10) }.to raise_error Travis::Settings::InactiveSetting }
+        it { expect { sets[:by_queue_max].set(10) }.to raise_error Settings::InactiveSetting }
       end
     end
   end
@@ -147,25 +148,25 @@ describe Travis::Settings::Group do
 
     describe 'exceeding max value' do
       describe 'with the default max value' do
-        it { expect { timeout.set(7201) }.to raise_error Travis::Settings::InvalidValue }
+        it { expect { timeout.set(7201) }.to raise_error Settings::InvalidValue }
       end
 
       describe 'with a custom max value on the owner' do
         before { const.new(user)[:max_timeout].set(1) }
-        it { expect { timeout.set(2) }.to raise_error Travis::Settings::InvalidValue }
+        it { expect { timeout.set(2) }.to raise_error Settings::InvalidValue }
       end
 
       describe 'with a custom max value on the repo' do
         before { const.new(repo)[:max_timeout].set(1) }
-        it { expect { timeout.set(2) }.to raise_error Travis::Settings::InvalidValue }
+        it { expect { timeout.set(2) }.to raise_error Settings::InvalidValue }
       end
     end
   end
 
   describe 'env_vars' do
     let(:user)   { create(:user) }
-    let(:var)    { Travis::Settings.env_vars(user).first }
-    let(:record) { Travis::Settings::Record::EnvVar.first }
+    let(:var)    { Settings.env_vars(user).first }
+    let(:record) { Settings::Record::EnvVar.first }
 
     describe 'public' do
       before { create(:env_var, owner: user, name: 'foo', value: 'FOO', public: true) }
@@ -182,8 +183,8 @@ describe Travis::Settings::Group do
 
   describe 'keys' do
     let(:user)   { create(:user) }
-    let(:key)    { Travis::Settings.ssh_keys(user).first }
-    let(:record) { Travis::Settings::Record::SshKey.first }
+    let(:key)    { Settings.ssh_keys(user).first }
+    let(:record) { Settings::Record::SshKey.first }
 
     before { create(:ssh_key, owner: user, key: '1234', description: 'description') }
     it { expect(key.key).to eq '1234' }
