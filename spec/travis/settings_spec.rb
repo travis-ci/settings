@@ -18,6 +18,10 @@ describe Settings::Group do
     let(:owner) { create(:user) }
     let(:sets)  { const.new(owner) }
 
+    it 'raises if the owner does not match' do
+      expect { const.new(create(:repo))[:comic_sans] }.to raise_error(Settings::UnknownSetting)
+    end
+
     describe 'all' do
       it { expect(sets.all.map(&:key)).to eq [:comic_sans] }
       it { expect(sets.all(:beta_features).map(&:key)).to eq [:comic_sans] }
