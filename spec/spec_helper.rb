@@ -1,3 +1,4 @@
+ENV.delete('DATABASE_URL')
 orm = ENV['ORM'] || 'active_record'
 
 require 'settings'
