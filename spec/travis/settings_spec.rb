@@ -187,10 +187,10 @@ describe Settings::Group do
 
   describe 'keys' do
     let(:user)   { create(:user) }
-    let(:key)    { Settings.ssh_keys(user).first }
-    let(:record) { Settings::Record::SshKey.first }
+    let(:key)    { Settings.ssl_keys(user).first }
+    let(:record) { Settings::Record::SslKey.first }
 
-    before { create(:ssh_key, owner: user, key: '1234', description: 'description') }
+    before { create(:ssl_key, owner: user, key: '1234', description: 'description') }
     it { expect(key.key).to eq '1234' }
     it { expect(key.description).to eq 'description' }
     it { expect(record.read_attribute(:key)).to start_with '--ENCR--' }

@@ -27,7 +27,7 @@ class CreateTables < ActiveRecord::Migration[5.1]
       t.boolean :public, default: false
     end
 
-    create_table :ssh_keys do |t|
+    create_table :ssl_keys do |t|
       t.belongs_to :owner, polymorphic: true
       t.text :key
       t.string :description

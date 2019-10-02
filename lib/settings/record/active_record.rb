@@ -19,7 +19,7 @@ module Settings
       end
     end
 
-    class SshKey < ActiveRecord::Base
+    class SslKey < ActiveRecord::Base
       include Travis::Encrypt::Helpers::ActiveRecord
 
       belongs_to :owner, polymorphic: true
