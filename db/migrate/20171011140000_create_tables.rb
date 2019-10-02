@@ -29,7 +29,7 @@ class CreateTables < ActiveRecord::Migration[5.1]
 
     create_table :ssh_keys do |t|
       t.belongs_to :owner, polymorphic: true
-      t.string :key
+      t.text :key
       t.string :description
     end
 
